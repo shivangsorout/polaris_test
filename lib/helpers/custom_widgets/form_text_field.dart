@@ -43,12 +43,8 @@ class _FormTextFieldState extends State<FormTextField> {
       ],
       controller: _textController,
       validator: (value) {
-        if (widget.isMandatory) {
-          if (value == null || value.isEmpty) {
-            return 'This field can\'t be empty. Please enter something!';
-          } else {
-            return null;
-          }
+        if (widget.isMandatory && (value == null || value.isEmpty)) {
+          return 'This field can\'t be empty. Please enter something!';
         } else {
           return null;
         }

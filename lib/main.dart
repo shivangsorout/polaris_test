@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:polaris_test/views/home_view.dart';
+import 'package:polaris_test/services/aws/s3_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  configureAmplify();
   runApp(const MyApp());
 }
 

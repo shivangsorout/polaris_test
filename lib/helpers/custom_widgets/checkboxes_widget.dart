@@ -18,11 +18,8 @@ class CheckboxesFormField extends FormField<List<String>> {
   }) : super(
           onSaved: (_) {},
           validator: (value) {
-            if (isMandatory) {
-              if (value == null || value.isEmpty) {
-                return 'Please select atleast one option!';
-              }
-              return null;
+            if (isMandatory && (value == null || value.isEmpty)) {
+              return 'Please select atleast one option!';
             } else {
               return null;
             }

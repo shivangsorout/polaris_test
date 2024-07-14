@@ -8,12 +8,20 @@ class CaptureImageFormField extends FormField<List<File>> {
   final String labelText;
   final bool isMandatory;
   final int numberOfImages;
+  final String candidateName;
+  final String savingFolder;
+  final int index;
+  final void Function(List<File>, String, String, int) addImages;
 
   CaptureImageFormField({
     super.key,
     required this.labelText,
     required this.isMandatory,
     required this.numberOfImages,
+    required this.candidateName,
+    required this.savingFolder,
+    required this.index,
+    required this.addImages,
   }) : super(
           validator: (value) {
             if (isMandatory &&
@@ -29,6 +37,10 @@ class CaptureImageFormField extends FormField<List<File>> {
               labelText: labelText,
               isMandatory: isMandatory,
               numberOfImages: numberOfImages,
+              candidateName: candidateName,
+              savingFolder: savingFolder,
+              index: index,
+              addImages: addImages,
             );
           },
         );
@@ -42,12 +54,20 @@ class _CaptureImageFormFieldContent extends StatefulWidget {
   final String labelText;
   final bool isMandatory;
   final int numberOfImages;
+  final String candidateName;
+  final String savingFolder;
+  final int index;
+  final void Function(List<File>, String, String, int) addImages;
 
   const _CaptureImageFormFieldContent({
     required this.state,
     required this.labelText,
     required this.isMandatory,
     required this.numberOfImages,
+    required this.candidateName,
+    required this.savingFolder,
+    required this.index,
+    required this.addImages,
   });
 
   @override
@@ -57,7 +77,7 @@ class _CaptureImageFormFieldContent extends StatefulWidget {
 
 class _CaptureImageFormFieldContentState
     extends State<_CaptureImageFormFieldContent> {
-  List<File> _imageFiles = [];
+  final List<File> _imageFiles = [];
 
   Future<void> _captureImage() async {
     final picker = ImagePicker();
@@ -69,6 +89,12 @@ class _CaptureImageFormFieldContentState
         _validate();
       });
     }
+    widget.addImages(
+      _imageFiles,
+      widget.candidateName,
+      widget.savingFolder,
+      widget.index,
+    );
   }
 
   void _validate() {

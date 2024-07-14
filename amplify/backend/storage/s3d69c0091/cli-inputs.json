@@ -1,0 +1,16 @@
+{
+  "resourceName": "s3d69c0091",
+  "policyUUID": "d69c0091",
+  "bucketName": "plrs-assignments-shivang",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

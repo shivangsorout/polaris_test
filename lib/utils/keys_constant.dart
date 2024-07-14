@@ -13,3 +13,8 @@ const String keyCheckBoxes = 'CheckBoxes';
 const String keyDropDown = 'DropDown';
 const String keyRadioGroup = 'RadioGroup';
 const String keyCaptureImages = 'CaptureImages';
+
+// inside app created constants
+const String keyAppImages = 'images';
+const String keyAppCandidateName = 'candidateName';
+const String keyAppSavingFolder = 'savingFolder';

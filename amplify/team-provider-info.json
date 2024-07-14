@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-polaris-dev-d5731-authRole",
+      "UnauthRoleArn": "arn:aws:iam::058264542321:role/amplify-polaris-dev-d5731-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::058264542321:role/amplify-polaris-dev-d5731-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-polaris-dev-d5731-deployment",
+      "UnauthRoleName": "amplify-polaris-dev-d5731-unauthRole",
+      "StackName": "amplify-polaris-dev-d5731",
+      "StackId": "arn:aws:cloudformation:us-west-2:058264542321:stack/amplify-polaris-dev-d5731/df8f2360-41e9-11ef-835b-0ac82298c4b1",
+      "AmplifyAppId": "d1lx2nn7sjl86x"
+    },
+    "categories": {
+      "auth": {
+        "polaris2fa37b54": {}
+      },
+      "storage": {
+        "s3d69c0091": {}
+      }
+    }
+  }
+}

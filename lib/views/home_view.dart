@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:polaris_test/helpers/custom_widgets/checkboxes_widget.dart';
+// import 'package:polaris_test/services/aws/s3_service.dart';
 import 'package:polaris_test/utils/keys_constant.dart';
-// import 'package:polaris_test/helpers/custom_widgets/text_label.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -12,6 +13,8 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final Map<int, Map<String, dynamic>> _formResponses = {};
+  final Map<int, Map<String, dynamic>> _formImageResponses = {};
+  final _formKey = GlobalKey<FormState>();
 
   void _onFieldChanged(
     int index,
@@ -26,11 +29,26 @@ class _HomeViewState extends State<HomeView> {
       _formResponses[index]![key] = value;
       _formResponses[index]![keyLabel] = label;
     });
-    print(_formResponses);
   }
 
   List<Map<String, dynamic>> _getFormValuesAsList() {
     return _formResponses.values.toList();
+  }
+
+  void addImages(
+    List<File> images,
+    String candidateName,
+    String savingFolder,
+    int index,
+  ) {
+    setState(() {
+      if (!_formImageResponses.containsKey(index)) {
+        _formImageResponses[index] = {};
+      }
+      _formImageResponses[index]![keyAppImages] = images;
+      _formImageResponses[index]![keyAppCandidateName] = candidateName;
+      _formImageResponses[index]![keyAppSavingFolder] = savingFolder;
+    });
   }
 
   @override
@@ -39,22 +57,36 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         title: const Text('Polaris Test'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            CheckboxesWidget(
-              index: 2,
-              options: const [
-                "OK",
-                "Door Locked",
-                "Bill Not available",
-              ],
-              isMandatory: true,
-              labelText: 'Consumer Status',
-              onFieldChanged: _onFieldChanged,
-            ),
-          ],
+      body: Form(
+        key: _formKey,
+        child: const Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              // MaterialButton(
+              //   onPressed: () {
+              //     if (_formKey.currentState!.validate()) {
+              //       print(_formResponses);
+              //     }
+              //     List<Map<String, dynamic>> imageDetails =
+              //         _formImageResponses.values.toList();
+              //     for (Map<String, dynamic> map in imageDetails) {
+              //       final List<File> images = map[keyAppImages];
+              //       final String localCandidateName = map[keyAppCandidateName];
+              //       final String localSavingFolder = map[keyAppSavingFolder];
+              //       for (File file in images) {
+              //         S3Service().uploadImage(
+              //           candidateName: localCandidateName,
+              //           image: file,
+              //           savingFolder: localSavingFolder,
+              //         );
+              //       }
+              //     }
+              //   },
+              //   child: Text('Hello'),
+              // ),
+            ],
+          ),
         ),
       ),
     );
