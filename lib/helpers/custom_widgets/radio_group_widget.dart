@@ -25,43 +25,80 @@ class RadioGroupFormField extends FormField<String> {
             }
           },
           builder: (FormFieldState<String> state) {
-            return TextLabel(
-              height: 5,
+            return _RadioGroupFormFieldContent(
+              options: options,
+              isMandatory: isMandatory,
               labelText: labelText,
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    ...options.map(
-                      (option) => RadioListTile<String>(
-                        title: Text(option),
-                        value: option,
-                        groupValue: state.value,
-                        onChanged: (value) {
-                          state.didChange(value);
-                          onFieldChanged(
-                            index,
-                            'selected_option',
-                            value,
-                            labelText,
-                          );
-                        },
-                      ),
-                    ),
-                    if (state.hasError)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          state.errorText ?? '',
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
-                  ]),
+              onFieldChanged: onFieldChanged,
+              index: index,
+              state: state,
             );
           },
         );
 
   @override
-  FormFieldState<String> createState() => _CustomRadioGroupFormFieldState();
+  FormFieldState<String> createState() => FormFieldState<String>();
 }
 
-class _CustomRadioGroupFormFieldState extends FormFieldState<String> {}
+class _RadioGroupFormFieldContent extends StatefulWidget {
+  final FormFieldState<String> state;
+  final List<String> options;
+  final bool isMandatory;
+  final int index;
+  final String labelText;
+  final Function(int, String, dynamic, String) onFieldChanged;
+  const _RadioGroupFormFieldContent({
+    required this.options,
+    required this.isMandatory,
+    required this.labelText,
+    required this.onFieldChanged,
+    required this.index,
+    required this.state,
+  });
+
+  @override
+  State<_RadioGroupFormFieldContent> createState() =>
+      _RadioGroupFormFieldContentState();
+}
+
+class _RadioGroupFormFieldContentState
+    extends State<_RadioGroupFormFieldContent>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return TextLabel(
+      height: 5,
+      labelText: widget.labelText,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        ...widget.options.map(
+          (option) => RadioListTile<String>(
+            title: Text(option),
+            value: option,
+            groupValue: widget.state.value,
+            onChanged: (value) {
+              widget.state.didChange(value);
+              widget.onFieldChanged(
+                widget.index,
+                'selected_option',
+                value,
+                widget.labelText,
+              );
+            },
+          ),
+        ),
+        if (widget.state.hasError)
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              widget.state.errorText ?? '',
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+      ]),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}

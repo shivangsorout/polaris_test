@@ -31,7 +31,7 @@ class S3Service {
         localFile: AWSFile.fromPath(image.path),
         path: StoragePath.fromString('public/$key'),
       );
-      result.result.then(
+      await result.result.then(
         (value) {
           devtools.log('Successfully uploaded image: ${result.operationId}');
         },

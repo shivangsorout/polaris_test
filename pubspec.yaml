@@ -40,6 +40,7 @@ dependencies:
   amplify_flutter: ^2.2.0
   amplify_storage_s3: ^2.2.0
   amplify_auth_cognito: ^2.2.0
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   flutter_test:

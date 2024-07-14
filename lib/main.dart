@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:polaris_test/bloc/form_bloc.dart';
+import 'package:polaris_test/bloc/form_event.dart';
+import 'package:polaris_test/repositories/form_repository.dart';
 import 'package:polaris_test/views/home_view.dart';
 import 'package:polaris_test/services/aws/s3_service.dart';
 
@@ -24,7 +28,10 @@ class MyApp extends StatelessWidget {
           surfaceTintColor: Colors.transparent,
         ),
       ),
-      home: const HomeView(),
+      home: BlocProvider(
+        create: (context) => FormsBloc(FormRepository())..add(LoadFormEvent()),
+        child: const HomeView(),
+      ),
     );
   }
 }

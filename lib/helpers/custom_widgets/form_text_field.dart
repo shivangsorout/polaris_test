@@ -24,7 +24,8 @@ class FormTextField extends StatefulWidget {
   State<FormTextField> createState() => _FormTextFieldState();
 }
 
-class _FormTextFieldState extends State<FormTextField> {
+class _FormTextFieldState extends State<FormTextField>
+    with AutomaticKeepAliveClientMixin {
   final _textController = TextEditingController();
 
   @override
@@ -35,6 +36,7 @@ class _FormTextFieldState extends State<FormTextField> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     bool isInteger = widget.inputType == 'INTEGER';
     return TextFormField(
       keyboardType: isInteger ? TextInputType.number : TextInputType.name,
@@ -67,4 +69,7 @@ class _FormTextFieldState extends State<FormTextField> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

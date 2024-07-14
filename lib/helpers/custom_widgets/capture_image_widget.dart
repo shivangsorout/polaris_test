@@ -8,17 +8,15 @@ class CaptureImageFormField extends FormField<List<File>> {
   final String labelText;
   final bool isMandatory;
   final int numberOfImages;
-  final String candidateName;
   final String savingFolder;
   final int index;
-  final void Function(List<File>, String, String, int) addImages;
+  final void Function(List<File>, String, int) addImages;
 
   CaptureImageFormField({
     super.key,
     required this.labelText,
     required this.isMandatory,
     required this.numberOfImages,
-    required this.candidateName,
     required this.savingFolder,
     required this.index,
     required this.addImages,
@@ -26,7 +24,7 @@ class CaptureImageFormField extends FormField<List<File>> {
           validator: (value) {
             if (isMandatory &&
                 (value == null || value.length < numberOfImages)) {
-              return 'You must capture $numberOfImages images!';
+              return 'You must capture ${numberOfImages == 1 ? '1 image' : '$numberOfImages images'}!';
             } else {
               return null;
             }
@@ -37,7 +35,6 @@ class CaptureImageFormField extends FormField<List<File>> {
               labelText: labelText,
               isMandatory: isMandatory,
               numberOfImages: numberOfImages,
-              candidateName: candidateName,
               savingFolder: savingFolder,
               index: index,
               addImages: addImages,
@@ -54,17 +51,15 @@ class _CaptureImageFormFieldContent extends StatefulWidget {
   final String labelText;
   final bool isMandatory;
   final int numberOfImages;
-  final String candidateName;
   final String savingFolder;
   final int index;
-  final void Function(List<File>, String, String, int) addImages;
+  final void Function(List<File>, String, int) addImages;
 
   const _CaptureImageFormFieldContent({
     required this.state,
     required this.labelText,
     required this.isMandatory,
     required this.numberOfImages,
-    required this.candidateName,
     required this.savingFolder,
     required this.index,
     required this.addImages,
@@ -76,7 +71,8 @@ class _CaptureImageFormFieldContent extends StatefulWidget {
 }
 
 class _CaptureImageFormFieldContentState
-    extends State<_CaptureImageFormFieldContent> {
+    extends State<_CaptureImageFormFieldContent>
+    with AutomaticKeepAliveClientMixin {
   final List<File> _imageFiles = [];
 
   Future<void> _captureImage() async {
@@ -91,7 +87,6 @@ class _CaptureImageFormFieldContentState
     }
     widget.addImages(
       _imageFiles,
-      widget.candidateName,
       widget.savingFolder,
       widget.index,
     );
@@ -105,6 +100,7 @@ class _CaptureImageFormFieldContentState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return TextLabel(
       height: 5,
       labelText: widget.labelText,
@@ -188,4 +184,7 @@ class _CaptureImageFormFieldContentState
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

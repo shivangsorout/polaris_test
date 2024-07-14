@@ -6,6 +6,11 @@ import 'package:polaris_test/services/aws/s3_service.dart';
 import 'package:polaris_test/utils/keys_constant.dart';
 
 class FormService {
+  //Singleton implementation
+  factory FormService() => _shared;
+  static final _shared = FormService._sharedInstance();
+  FormService._sharedInstance();
+
   static const String fetchFormUrl =
       'https://chatbot-api.grampower.com/flutter-assignment';
   static const String pushDataUrl =
@@ -20,7 +25,7 @@ class FormService {
       final map = json.decode(response.body) as Map<String, dynamic>;
       resultMap[keyFormName] = map[keyFormName];
       resultMap[keyFields] = (map[keyFields] as List)
-          .map((fieldJson) => FormField.fromJson(fieldJson))
+          .map((fieldJson) => FormFieldData.fromJson(fieldJson))
           .toList();
       return resultMap;
     } else {
@@ -42,11 +47,11 @@ class FormService {
     }
   }
 
-  Future<void> uploadImage(
-    File imageFile,
-    String candidateName,
-    String savingFolder,
-  ) async {
+  Future<void> uploadImage({
+    required File imageFile,
+    String candidateName = 'ShivangSorout',
+    required String savingFolder,
+  }) async {
     await s3Service.uploadImage(
       image: imageFile,
       candidateName: candidateName,

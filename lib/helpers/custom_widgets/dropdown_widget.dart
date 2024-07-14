@@ -22,9 +22,11 @@ class DropdownWidgetFormField extends StatefulWidget {
       _DropdownWidgetFormFieldState();
 }
 
-class _DropdownWidgetFormFieldState extends State<DropdownWidgetFormField> {
+class _DropdownWidgetFormFieldState extends State<DropdownWidgetFormField>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return DropdownButtonFormField<String>(
       hint: const Text('Select appropriate option'),
       items: widget.options
@@ -56,4 +58,7 @@ class _DropdownWidgetFormFieldState extends State<DropdownWidgetFormField> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

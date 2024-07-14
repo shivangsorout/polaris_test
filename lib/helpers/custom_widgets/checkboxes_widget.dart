@@ -25,51 +25,95 @@ class CheckboxesFormField extends FormField<List<String>> {
             }
           },
           builder: (FormFieldState<List<String>> state) {
-            return TextLabel(
-              height: 5,
+            return _CheckboxesFormFieldContent(
+              state: state,
+              index: index,
+              options: options,
+              isMandatory: isMandatory,
               labelText: labelText,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Column(
-                    children: options
-                        .asMap()
-                        .entries
-                        .map(
-                          (entry) => CheckboxListTile(
-                            title: Text(entry.value),
-                            value: state.value?.contains(entry.value) ?? false,
-                            onChanged: (bool? isChecked) {
-                              final List<String> newValue =
-                                  List<String>.from(state.value ?? []);
-                              if (isChecked == true) {
-                                newValue.add(entry.value);
-                              } else {
-                                newValue.remove(entry.value);
-                              }
-                              onFieldChanged(
-                                index,
-                                'selected_options',
-                                newValue,
-                                labelText,
-                              );
-                              state.didChange(newValue);
-                            },
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  if (state.hasError)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                        state.errorText ?? '',
-                        style: const TextStyle(color: Colors.red),
-                      ),
-                    ),
-                ],
-              ),
+              onFieldChanged: onFieldChanged,
             );
           },
         );
+  @override
+  FormFieldState<List<String>> createState() => FormFieldState<List<String>>();
+}
+
+class _CheckboxesFormFieldContent extends StatefulWidget {
+  final FormFieldState<List<String>> state;
+  final int index;
+  final List<String> options;
+  final bool isMandatory;
+  final String labelText;
+  final Function(int, String, dynamic, String) onFieldChanged;
+
+  const _CheckboxesFormFieldContent({
+    required this.state,
+    required this.index,
+    required this.options,
+    required this.isMandatory,
+    required this.labelText,
+    required this.onFieldChanged,
+  });
+
+  @override
+  State<_CheckboxesFormFieldContent> createState() =>
+      _CheckboxesFormFieldContentState();
+}
+
+class _CheckboxesFormFieldContentState
+    extends State<_CheckboxesFormFieldContent>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return TextLabel(
+      height: 5,
+      labelText: widget.labelText,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Column(
+            children: widget.options
+                .asMap()
+                .entries
+                .map(
+                  (entry) => CheckboxListTile(
+                    title: Text(entry.value),
+                    value: widget.state.value?.contains(entry.value) ?? false,
+                    onChanged: (bool? isChecked) {
+                      final List<String> newValue =
+                          List<String>.from(widget.state.value ?? []);
+                      if (isChecked == true) {
+                        newValue.add(entry.value);
+                      } else {
+                        newValue.remove(entry.value);
+                      }
+                      widget.onFieldChanged(
+                        widget.index,
+                        'selected_options',
+                        newValue,
+                        widget.labelText,
+                      );
+                      widget.state.didChange(newValue);
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+          if (widget.state.hasError)
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Text(
+                widget.state.errorText ?? '',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

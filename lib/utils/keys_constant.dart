@@ -18,5 +18,4 @@ const String keyCaptureImages = 'CaptureImages';
 
 // inside app created constants
 const String keyAppImages = 'images';
-const String keyAppCandidateName = 'candidateName';
 const String keyAppSavingFolder = 'savingFolder';
