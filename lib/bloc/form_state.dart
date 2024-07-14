@@ -5,10 +5,12 @@ import 'package:polaris_test/models/form_field.dart';
 abstract class FormsState {
   final String formName;
   final bool isLoading;
+  final String successMessage;
 
   const FormsState({
     required this.formName,
     this.isLoading = false,
+    this.successMessage = '',
   });
 }
 
@@ -16,6 +18,7 @@ class FormInitialState extends FormsState {
   const FormInitialState({
     super.formName = '',
     super.isLoading = true,
+    super.successMessage = '',
   });
 }
 
@@ -25,6 +28,7 @@ class FormLoadedState extends FormsState {
     required this.formFieldList,
     required super.formName,
     super.isLoading = false,
+    super.successMessage = '',
   });
 }
 

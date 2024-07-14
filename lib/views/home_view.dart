@@ -15,6 +15,8 @@ import 'package:polaris_test/models/meta_info/checkbox_meta_info.dart';
 import 'package:polaris_test/models/meta_info/dropdown_meta_info.dart';
 import 'package:polaris_test/models/meta_info/edit_text_meta_info.dart';
 import 'package:polaris_test/models/meta_info/radio_group_meta_info.dart';
+import 'package:polaris_test/utils/dialogs/error_dialog.dart';
+import 'package:polaris_test/utils/dialogs/success_dialog.dart';
 import 'package:polaris_test/utils/keys_constant.dart';
 
 class HomeView extends StatefulWidget {
@@ -69,7 +71,14 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FormsBloc, FormsState>(
+    return BlocConsumer<FormsBloc, FormsState>(
+      listener: (context, state) {
+        if (state is FormErrorState) {
+          showErrorDialog(context, state.message);
+        } else if (state.successMessage.isNotEmpty) {
+          showSuccessDialog(context, state.successMessage);
+        }
+      },
       builder: (context, state) {
         if (state.isLoading) {
           return Scaffold(

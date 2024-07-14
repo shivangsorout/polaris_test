@@ -53,6 +53,7 @@ class FormsBloc extends Bloc<FormsEvent, FormsState> {
           formFieldList: (state as FormLoadedState).formFieldList,
           formName: state.formName,
           isLoading: false,
+          successMessage: 'Data and Images were submitted successfully!',
         ));
       } catch (error) {
         emit(FormErrorState(
