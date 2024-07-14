@@ -16,7 +16,7 @@ class CaptureImageMetaInfo extends MetaInfo {
       : numberOfImagesToCapture = map[keyNumberOfImages],
         savingFolder = map[keySavingFolder],
         super(
-          isMandatory: map[keyMandatory],
+          isMandatory: map[keyMandatory] == 'yes',
           label: map[keyLabel],
         );
 }

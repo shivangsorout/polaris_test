@@ -11,9 +11,11 @@ class CheckboxMetaInfo extends MetaInfo {
   });
 
   CheckboxMetaInfo.fromJson(Map<String, dynamic> map)
-      : options = map[keyOptions],
+      : options = (map[keyOptions] as List<dynamic>)
+            .map<String>((item) => item)
+            .toList(),
         super(
-          isMandatory: map[keyMandatory],
+          isMandatory: map[keyMandatory] == 'yes',
           label: map[keyLabel],
         );
 }

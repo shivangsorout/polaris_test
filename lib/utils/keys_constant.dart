@@ -6,6 +6,8 @@ const String keyMandatory = 'mandatory';
 const String keyOptions = 'options';
 const String keyNumberOfImages = 'no_of_images_to_capture';
 const String keySavingFolder = 'saving_folder';
+const String keyFormName = 'form_name';
+const String keyFields = 'fields';
 
 // Component types keys
 const String keyEditText = 'EditText';

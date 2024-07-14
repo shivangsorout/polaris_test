@@ -6,18 +6,18 @@ import 'package:polaris_test/models/meta_info/dropdown_meta_info.dart';
 import 'package:polaris_test/models/meta_info/edit_text_meta_info.dart';
 import 'package:polaris_test/models/meta_info/radio_group_meta_info.dart';
 
-class Fields {
+class FormField {
   final MetaInfo metaInfo;
   final String componentType;
 
-  Fields({
+  FormField({
     required this.metaInfo,
     required this.componentType,
   });
 
-  Fields.fromJson(Map<String, dynamic> map)
+  FormField.fromJson(Map<String, dynamic> map)
       : componentType = map[keyComponentType],
-        metaInfo = fromComponentType(map[keyComponentType], map);
+        metaInfo = fromComponentType(map[keyComponentType], map[keyMetaInfo]);
 }
 
 MetaInfo fromComponentType(

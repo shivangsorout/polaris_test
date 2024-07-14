@@ -14,6 +14,6 @@ class EditTextMetaInfo extends MetaInfo {
       : componentInputType = map[keyComponentInputType],
         super(
           label: map[keyLabel],
-          isMandatory: map[keyMandatory],
+          isMandatory: map[keyMandatory] == 'yes',
         );
 }
