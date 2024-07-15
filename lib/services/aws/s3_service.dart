@@ -37,7 +37,8 @@ class S3Service {
         },
       );
     } catch (e) {
-      devtools.log('Error uploading image: $e');
+      devtools.log('Error uploading image: $e \n ${e.runtimeType}');
+      rethrow;
     }
   }
 }

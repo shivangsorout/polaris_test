@@ -90,74 +90,83 @@ class _HomeViewState extends State<HomeView> {
             ),
           );
         } else {
-          final cState = state as FormLoadedState;
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(cState.formName),
-            ),
-            body: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      padding: const EdgeInsets.all(12.0),
-                      itemCount: cState.formFieldList.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 13.0),
-                          child:
-                              _buildWidget(cState.formFieldList[index], index),
-                        );
-                      },
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0,
-                            ),
-                            child: MaterialButton(
-                              color: Colors.black,
+          final cState = state is FormLoadedState ? state : state;
+          if (cState is FormLoadedState) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(cState.formName),
+              ),
+              body: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.all(12.0),
+                        itemCount: cState.formFieldList.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 13.0),
+                            child: _buildWidget(
+                                cState.formFieldList[index], index),
+                          );
+                        },
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                vertical: 10,
+                                horizontal: 12.0,
                               ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  context
-                                      .read<FormsBloc>()
-                                      .add(SubmitFormDataEvent(
-                                        formData:
-                                            _formResponses.values.toList(),
-                                        imageDetails:
-                                            _formImageResponses.values.toList(),
-                                      ));
-                                }
-                              },
-                              child: const Text(
-                                'Submit',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
+                              child: MaterialButton(
+                                color: Colors.black,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10)),
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    context
+                                        .read<FormsBloc>()
+                                        .add(SubmitFormDataEvent(
+                                          formData:
+                                              _formResponses.values.toList(),
+                                          imageDetails: _formImageResponses
+                                              .values
+                                              .toList(),
+                                        ));
+                                  }
+                                },
+                                child: const Text(
+                                  'Submit',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20)
-                  ],
+                        ],
+                      ),
+                      const SizedBox(height: 20)
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
+            );
+          } else {
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Disconnected'),
+              ),
+            );
+          }
         }
       },
     );
