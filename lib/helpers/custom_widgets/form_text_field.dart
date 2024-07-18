@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:polaris_test/models/form_field.dart';
+import 'package:polaris_test/models/meta_info/edit_text_meta_info.dart';
 import 'package:polaris_test/utils/constant.dart';
 
 class FormTextField extends StatefulWidget {
   const FormTextField({
     super.key,
     this.maxLines = 1,
-    required this.labelText,
-    required this.inputType,
-    required this.isMandatory,
+    required this.formField,
     required this.onFieldChanged,
     required this.index,
   });
 
-  final String labelText;
+  final FormFieldData formField;
   final int? maxLines;
-  final String inputType;
-  final bool isMandatory;
   final int index;
-  final Function(int, String, dynamic, String) onFieldChanged;
+  final Function(int, FormFieldData) onFieldChanged;
 
   @override
   State<FormTextField> createState() => _FormTextFieldState();
@@ -26,7 +24,15 @@ class FormTextField extends StatefulWidget {
 
 class _FormTextFieldState extends State<FormTextField>
     with AutomaticKeepAliveClientMixin {
-  final _textController = TextEditingController();
+  late final TextEditingController _textController;
+
+  @override
+  void initState() {
+    _textController = TextEditingController();
+    final metaInfo = widget.formField.metaInfo as EditTextMetaInfo;
+    _textController.text = metaInfo.filledInput;
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -37,7 +43,8 @@ class _FormTextFieldState extends State<FormTextField>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    bool isInteger = widget.inputType == 'INTEGER';
+    final metaInfo = widget.formField.metaInfo as EditTextMetaInfo;
+    bool isInteger = metaInfo.componentInputType == 'INTEGER';
     return TextFormField(
       keyboardType: isInteger ? TextInputType.number : TextInputType.name,
       inputFormatters: [
@@ -45,14 +52,24 @@ class _FormTextFieldState extends State<FormTextField>
       ],
       controller: _textController,
       validator: (value) {
-        if (widget.isMandatory && (value == null || value.isEmpty)) {
+        if (metaInfo.isMandatory && (value == null || value.isEmpty)) {
           return 'This field can\'t be empty. Please enter something!';
         } else {
           return null;
         }
       },
       onChanged: (value) {
-        widget.onFieldChanged(widget.index, 'value', value, widget.labelText);
+        final updatedMetaInfo = EditTextMetaInfo(
+          componentInputType: metaInfo.componentInputType,
+          label: metaInfo.label,
+          isMandatory: metaInfo.isMandatory,
+          filledInput: value,
+        );
+        final updatedFormField = FormFieldData(
+          metaInfo: updatedMetaInfo,
+          componentType: widget.formField.componentType,
+        );
+        widget.onFieldChanged(widget.index, updatedFormField);
       },
       textInputAction: TextInputAction.next,
       maxLines: widget.maxLines,
@@ -60,9 +77,9 @@ class _FormTextFieldState extends State<FormTextField>
       decoration: InputDecoration(
         enabled: true,
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        labelText: widget.labelText,
+        labelText: metaInfo.label,
         labelStyle: const TextStyle(fontSize: 20),
-        hintText: 'Enter ${widget.labelText}',
+        hintText: 'Enter ${metaInfo.label}',
         border: outlineInputBorder,
         enabledBorder: outlineInputBorder,
         focusedBorder: outlineInputBorder,

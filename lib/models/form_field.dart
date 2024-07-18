@@ -5,6 +5,7 @@ import 'package:polaris_test/models/meta_info/checkbox_meta_info.dart';
 import 'package:polaris_test/models/meta_info/dropdown_meta_info.dart';
 import 'package:polaris_test/models/meta_info/edit_text_meta_info.dart';
 import 'package:polaris_test/models/meta_info/radio_group_meta_info.dart';
+import 'package:polaris_test/utils/utility.dart';
 
 class FormFieldData {
   final MetaInfo metaInfo;
@@ -17,7 +18,18 @@ class FormFieldData {
 
   FormFieldData.fromJson(Map<String, dynamic> map)
       : componentType = map[keyComponentType],
-        metaInfo = fromComponentType(map[keyComponentType], map[keyMetaInfo]);
+        metaInfo = fromComponentType(
+          map[keyComponentType],
+          convertToStringDynamicMap(map[keyMetaInfo]),
+        );
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> resultMap = {};
+    resultMap[keyComponentType] = componentType;
+    resultMap[keyMetaInfo] = metaInfo.toJson();
+
+    return resultMap;
+  }
 }
 
 MetaInfo fromComponentType(

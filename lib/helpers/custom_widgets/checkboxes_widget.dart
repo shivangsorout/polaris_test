@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:polaris_test/helpers/custom_widgets/text_label.dart';
+import 'package:polaris_test/models/form_field.dart';
+import 'package:polaris_test/models/meta_info/checkbox_meta_info.dart';
 
 class CheckboxesFormField extends FormField<List<String>> {
   final int index;
-  final List<String> options;
   final bool isMandatory;
-  final String labelText;
-  final Function(int, String, dynamic, String) onFieldChanged;
+  final FormFieldData formField;
+  final Function(int, FormFieldData) onFieldChanged;
 
   CheckboxesFormField({
     super.key,
     required this.index,
-    required this.options,
     required this.isMandatory,
-    required this.labelText,
+    required this.formField,
     required this.onFieldChanged,
   }) : super(
+          initialValue:
+              (formField.metaInfo as CheckboxMetaInfo).selectedOptions,
           onSaved: (_) {},
           validator: (value) {
             if (isMandatory && (value == null || value.isEmpty)) {
@@ -28,9 +30,8 @@ class CheckboxesFormField extends FormField<List<String>> {
             return _CheckboxesFormFieldContent(
               state: state,
               index: index,
-              options: options,
               isMandatory: isMandatory,
-              labelText: labelText,
+              formField: formField,
               onFieldChanged: onFieldChanged,
             );
           },
@@ -42,17 +43,15 @@ class CheckboxesFormField extends FormField<List<String>> {
 class _CheckboxesFormFieldContent extends StatefulWidget {
   final FormFieldState<List<String>> state;
   final int index;
-  final List<String> options;
   final bool isMandatory;
-  final String labelText;
-  final Function(int, String, dynamic, String) onFieldChanged;
+  final FormFieldData formField;
+  final Function(int, FormFieldData) onFieldChanged;
 
   const _CheckboxesFormFieldContent({
     required this.state,
     required this.index,
-    required this.options,
     required this.isMandatory,
-    required this.labelText,
+    required this.formField,
     required this.onFieldChanged,
   });
 
@@ -67,14 +66,15 @@ class _CheckboxesFormFieldContentState
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final metaInfo = widget.formField.metaInfo as CheckboxMetaInfo;
     return TextLabel(
       height: 5,
-      labelText: widget.labelText,
+      labelText: metaInfo.label,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Column(
-            children: widget.options
+            children: metaInfo.options
                 .asMap()
                 .entries
                 .map(
@@ -89,11 +89,19 @@ class _CheckboxesFormFieldContentState
                       } else {
                         newValue.remove(entry.value);
                       }
+                      final updatedMetaInfo = CheckboxMetaInfo(
+                        label: metaInfo.label,
+                        isMandatory: metaInfo.isMandatory,
+                        options: metaInfo.options,
+                        selectedOptions: newValue,
+                      );
+                      final updatedFormField = FormFieldData(
+                        metaInfo: updatedMetaInfo,
+                        componentType: widget.formField.componentType,
+                      );
                       widget.onFieldChanged(
                         widget.index,
-                        'selected_options',
-                        newValue,
-                        widget.labelText,
+                        updatedFormField,
                       );
                       widget.state.didChange(newValue);
                     },

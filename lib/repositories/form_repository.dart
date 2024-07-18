@@ -21,12 +21,12 @@ class FormRepository {
   }) async {
     await formService.pushFormData(formData);
     for (Map<String, dynamic> map in imageDetails) {
-      final List<File> images = map[keyAppImages];
-      final String localSavingFolder = map[keyAppSavingFolder];
-      for (File file in images) {
+      final List<String> images = map[keyMetaInfo][keyAppImagesPathsList] ?? [];
+      final String savingFolder = map[keyMetaInfo][keySavingFolder];
+      for (String imagePath in images) {
         await formService.uploadImage(
-          imageFile: file,
-          savingFolder: localSavingFolder,
+          imageFile: File(imagePath),
+          savingFolder: savingFolder,
         );
       }
     }

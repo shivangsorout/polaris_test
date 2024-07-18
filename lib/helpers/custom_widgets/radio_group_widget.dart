@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:polaris_test/helpers/custom_widgets/text_label.dart';
+import 'package:polaris_test/models/form_field.dart';
+import 'package:polaris_test/models/meta_info/radio_group_meta_info.dart';
 
 class RadioGroupFormField extends FormField<String> {
-  final List<String> options;
   final bool isMandatory;
+  final FormFieldData formField;
   final int index;
-  final String labelText;
-  final Function(int, String, dynamic, String) onFieldChanged;
+  final Function(int, FormFieldData) onFieldChanged;
 
   RadioGroupFormField({
     super.key,
-    required this.options,
     required this.isMandatory,
-    required this.labelText,
+    required this.formField,
     required this.onFieldChanged,
     required this.index,
   }) : super(
-          // onSaved: onSaved,
+          initialValue:
+              (formField.metaInfo as RadioGroupMetaInfo).selectedOption,
           validator: (value) {
             if (isMandatory && (value == null || value.isEmpty)) {
               return 'Please select an option!';
@@ -26,9 +27,8 @@ class RadioGroupFormField extends FormField<String> {
           },
           builder: (FormFieldState<String> state) {
             return _RadioGroupFormFieldContent(
-              options: options,
               isMandatory: isMandatory,
-              labelText: labelText,
+              formField: formField,
               onFieldChanged: onFieldChanged,
               index: index,
               state: state,
@@ -42,15 +42,13 @@ class RadioGroupFormField extends FormField<String> {
 
 class _RadioGroupFormFieldContent extends StatefulWidget {
   final FormFieldState<String> state;
-  final List<String> options;
   final bool isMandatory;
+  final FormFieldData formField;
   final int index;
-  final String labelText;
-  final Function(int, String, dynamic, String) onFieldChanged;
+  final Function(int, FormFieldData) onFieldChanged;
   const _RadioGroupFormFieldContent({
-    required this.options,
     required this.isMandatory,
-    required this.labelText,
+    required this.formField,
     required this.onFieldChanged,
     required this.index,
     required this.state,
@@ -67,22 +65,31 @@ class _RadioGroupFormFieldContentState
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final metaInfo = widget.formField.metaInfo as RadioGroupMetaInfo;
     return TextLabel(
       height: 5,
-      labelText: widget.labelText,
+      labelText: metaInfo.label,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        ...widget.options.map(
+        ...metaInfo.options.map(
           (option) => RadioListTile<String>(
             title: Text(option),
             value: option,
             groupValue: widget.state.value,
             onChanged: (value) {
               widget.state.didChange(value);
+              final updatedMetaInfo = RadioGroupMetaInfo(
+                options: metaInfo.options,
+                label: metaInfo.label,
+                isMandatory: metaInfo.isMandatory,
+                selectedOption: value ?? '',
+              );
+              final updatedFormField = FormFieldData(
+                metaInfo: updatedMetaInfo,
+                componentType: widget.formField.componentType,
+              );
               widget.onFieldChanged(
                 widget.index,
-                'selected_option',
-                value,
-                widget.labelText,
+                updatedFormField,
               );
             },
           ),

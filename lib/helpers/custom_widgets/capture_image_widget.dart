@@ -3,24 +3,26 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:polaris_test/helpers/custom_widgets/text_label.dart';
+import 'package:polaris_test/models/form_field.dart';
+import 'package:polaris_test/models/meta_info/capture_image_meta_info.dart';
 
-class CaptureImageFormField extends FormField<List<File>> {
-  final String labelText;
+class CaptureImageFormField extends FormField<List<String>> {
   final bool isMandatory;
   final int numberOfImages;
-  final String savingFolder;
+  final FormFieldData formField;
   final int index;
-  final void Function(List<File>, String, int) addImages;
+  final void Function(FormFieldData, int) addImages;
 
   CaptureImageFormField({
     super.key,
-    required this.labelText,
     required this.isMandatory,
     required this.numberOfImages,
-    required this.savingFolder,
+    required this.formField,
     required this.index,
     required this.addImages,
   }) : super(
+          initialValue:
+              (formField.metaInfo as CaptureImageMetaInfo).imagesPathsList,
           validator: (value) {
             if (isMandatory &&
                 (value == null || value.length < numberOfImages)) {
@@ -29,13 +31,12 @@ class CaptureImageFormField extends FormField<List<File>> {
               return null;
             }
           },
-          builder: (FormFieldState<List<File>> state) {
+          builder: (FormFieldState<List<String>> state) {
             return _CaptureImageFormFieldContent(
               state: state,
-              labelText: labelText,
               isMandatory: isMandatory,
               numberOfImages: numberOfImages,
-              savingFolder: savingFolder,
+              formField: formField,
               index: index,
               addImages: addImages,
             );
@@ -43,24 +44,22 @@ class CaptureImageFormField extends FormField<List<File>> {
         );
 
   @override
-  FormFieldState<List<File>> createState() => FormFieldState<List<File>>();
+  FormFieldState<List<String>> createState() => FormFieldState<List<String>>();
 }
 
 class _CaptureImageFormFieldContent extends StatefulWidget {
-  final FormFieldState<List<File>> state;
-  final String labelText;
+  final FormFieldState<List<String>> state;
   final bool isMandatory;
   final int numberOfImages;
-  final String savingFolder;
+  final FormFieldData formField;
   final int index;
-  final void Function(List<File>, String, int) addImages;
+  final void Function(FormFieldData, int) addImages;
 
   const _CaptureImageFormFieldContent({
     required this.state,
-    required this.labelText,
     required this.isMandatory,
     required this.numberOfImages,
-    required this.savingFolder,
+    required this.formField,
     required this.index,
     required this.addImages,
   });
@@ -73,7 +72,7 @@ class _CaptureImageFormFieldContent extends StatefulWidget {
 class _CaptureImageFormFieldContentState
     extends State<_CaptureImageFormFieldContent>
     with AutomaticKeepAliveClientMixin {
-  final List<File> _imageFiles = [];
+  List<String> imagePaths = [];
 
   Future<void> _captureImage() async {
     final picker = ImagePicker();
@@ -81,21 +80,43 @@ class _CaptureImageFormFieldContentState
 
     if (pickedFile != null) {
       setState(() {
-        _imageFiles.add(File(pickedFile.path));
+        imagePaths.add(pickedFile.path);
         _validate();
       });
     }
+    final metaInfo = widget.formField.metaInfo as CaptureImageMetaInfo;
+    final CaptureImageMetaInfo updatedMetaInfo = CaptureImageMetaInfo(
+      label: metaInfo.label,
+      isMandatory: widget.isMandatory,
+      numberOfImagesToCapture: widget.numberOfImages,
+      savingFolder: metaInfo.savingFolder,
+      imagesPathsList: imagePaths,
+    );
+    final updatedFormField = FormFieldData(
+      componentType: widget.formField.componentType,
+      metaInfo: updatedMetaInfo,
+    );
     widget.addImages(
-      _imageFiles,
-      widget.savingFolder,
+      updatedFormField,
       widget.index,
     );
   }
 
   void _validate() {
     setState(() {
-      widget.state.didChange(_imageFiles);
+      widget.state.didChange(imagePaths);
     });
+  }
+
+  @override
+  void initState() {
+    final metaInfo = widget.formField.metaInfo as CaptureImageMetaInfo;
+    if (metaInfo.imagesPathsList.isNotEmpty) {
+      setState(() {
+        imagePaths = metaInfo.imagesPathsList;
+      });
+    }
+    super.initState();
   }
 
   @override
@@ -103,7 +124,7 @@ class _CaptureImageFormFieldContentState
     super.build(context);
     return TextLabel(
       height: 5,
-      labelText: widget.labelText,
+      labelText: widget.formField.metaInfo.label,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,13 +136,13 @@ class _CaptureImageFormFieldContentState
                   spacing: 10,
                   runSpacing: 10,
                   children: List.generate(widget.numberOfImages, (index) {
-                    if (index < _imageFiles.length) {
+                    if (index < imagePaths.length) {
                       return Stack(
                         children: [
                           ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: Image.file(
-                              _imageFiles[index],
+                              File(imagePaths[index]),
                               width: 100,
                               height: 100,
                               fit: BoxFit.cover,
@@ -134,7 +155,7 @@ class _CaptureImageFormFieldContentState
                               icon: const Icon(Icons.close, color: Colors.red),
                               onPressed: () {
                                 setState(() {
-                                  _imageFiles.removeAt(index);
+                                  imagePaths.removeAt(index);
                                   _validate();
                                 });
                               },

@@ -18,4 +18,7 @@ const String keyCaptureImages = 'CaptureImages';
 
 // inside app created constants
 const String keyAppImages = 'images';
-const String keyAppSavingFolder = 'savingFolder';
+const String keyAppImagesPathsList = 'imagesPathsList';
+const String keyAppSelectedOptions = 'selectedOptions';
+const String keyAppSelectedOption = 'selectedOption';
+const String keyAppFilledInput = 'filledInput';

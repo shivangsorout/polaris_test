@@ -9,4 +9,6 @@ abstract class MetaInfo {
     required this.label,
     required this.isMandatory,
   });
+
+  Map<String, dynamic> toJson();
 }
